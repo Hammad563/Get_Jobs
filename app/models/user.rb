@@ -6,5 +6,6 @@ class User < ApplicationRecord
           :confirmable, :lockable, :trackable
 
           #:database_authenticatable
+  has_one :profile
 
 end
