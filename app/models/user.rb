@@ -7,5 +7,14 @@ class User < ApplicationRecord
 
           #:database_authenticatable
   has_one :profile
+  has_many :jobs_published
+  after_create :after_create_user
+
+  def after_create_user
+    profile = Profile.new({
+      user_id: self.id
+    })
+    profile.save!
+  end
 
 end

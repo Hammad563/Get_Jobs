@@ -13,8 +13,22 @@ Rails.application.routes.draw do
       post "refresh", to: "tokens#refresh"
       post "logout", to: "tokens#logout"
 
+      #profile
+      post "user/profile_update", to: "profiles#update_profile"
+      post "user/profile/create_role", to: "profiles#create_role"
+      post "user/profile/create_exp", to: "profiles#create_work_exp"
+      post "user/profile/create_education", to: "profiles#create_education_params"
+      #profile update
+      put "user/profile/update_role", to: "profiles#update_role"
+      put "user/profile/update_education", to: "profiles#update_work_exp"
+      put "user/profile/update_exp", to: "profiles#update_education"
 
-      #users
+      #delete role,education/exp
+      post "user/profile/delete_role", to: "profiles#delete_role"
+      post "user/profile/delete_education", to: "profiles#delete_education"
+      post "user/profile/delete_exp", to: "profiles#delete_work_exp"
+
+
     end
   end
 

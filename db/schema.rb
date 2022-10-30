@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_28_012714) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_30_220421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -18,17 +18,37 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_012714) do
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "category_role", ["Engineer", "Design", "Operations", "Product", "Management"]
+  create_enum "job_status", ["Active", "Stale", "Hidden"]
+  create_enum "job_type", ["Full Time", "Part Time", "Co_op", "On_call"]
 
   create_table "educations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
     t.string "school"
-    t.string "type"
+    t.string "education_type"
     t.string "major"
     t.decimal "gpa", precision: 11, scale: 2
     t.date "grad_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_educations_on_profile_id"
+  end
+
+  create_table "jobs_publisheds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "company"
+    t.string "title"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.enum "type", enum_type: "job_type"
+    t.boolean "remote"
+    t.string "hire_in_country"
+    t.integer "experience"
+    t.text "description"
+    t.enum "status", enum_type: "job_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_jobs_publisheds_on_user_id"
   end
 
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -121,6 +141,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_28_012714) do
   end
 
   add_foreign_key "educations", "profiles"
+  add_foreign_key "jobs_publisheds", "users"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "roles", "profiles"

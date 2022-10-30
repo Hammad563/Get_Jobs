@@ -3,4 +3,6 @@ class Profile < ApplicationRecord
   has_many :role
   has_many :education
   has_many :work_experience
+
+
 end
