@@ -11,6 +11,23 @@ class Api::V1::AuthController < Doorkeeper::TokensController
         end
     end
 
+    def logout
+      params[:token] = access_token
+      revoke_token if authorized?
+    response_code = "custom.success.default"
+    render json: {
+             response_code: response_code,
+             response_message: I18n.t(response_code),
+           }, status: 200
+    end
+    private
+    def access_token
+      pattern = /^Bearer /
+      header = request.headers["Authorization"]
+      header.gsub(pattern, "") if header && header.match(pattern)
+    end
+
+
 end
 
 module Doorkeeper

@@ -10,6 +10,24 @@ module GetJobs
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins "*"
+        resource(
+          "*",
+          headers: :any,
+          methods: [:get, :patch, :put, :delete, :post, :options],
+        )
+      end
+    end
+    config.action_dispatch.default_headers = {
+      'X-Content-Type-Options' => 'nosniff'
+    }
+
+
 
     # Configuration for the application, engines, and railties goes here.
     #

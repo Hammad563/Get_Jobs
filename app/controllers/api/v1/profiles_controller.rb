@@ -102,7 +102,7 @@ class Api::V1::ProfilesController < Api::BaseController
 
 
     def profile_params
-        params.permit(:user_id,:country, :state, :city, :experience, :bio, :url, :linked_in, :github, :achievements)
+        params.permit(:user_id,:country, :state, :city, :experience, :bio, :url, :linked_in, :github, :achievements, skill_list: [])
     end
     def roles_params
         params.permit(:profile_id, :name, :category)

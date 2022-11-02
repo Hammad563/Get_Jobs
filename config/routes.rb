@@ -10,8 +10,8 @@ Rails.application.routes.draw do
       post "confirm", to: "users#confirm"
   
       post "login", to: "auth#login"
-      post "refresh", to: "tokens#refresh"
-      post "logout", to: "tokens#logout"
+      post "refresh", to: "auth#refresh"
+      post "logout", to: "auth#logout"
 
       #profile
       post "user/profile_update", to: "profiles#update_profile"
