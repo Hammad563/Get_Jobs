@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  use_doorkeeper
   root "api/v1/users#index"
   devise_for :users, only: [:confirmations, :passwords, :users], controllers: { confirmations: "confirmations", passwords: "passwords" }
   
@@ -14,6 +13,7 @@ Rails.application.routes.draw do
       post "logout", to: "auth#logout"
 
       #profile
+      get "user/profile", to: "profiles#index"
       post "user/profile_update", to: "profiles#update_profile"
       post "user/profile/create_role", to: "profiles#create_role"
       post "user/profile/create_exp", to: "profiles#create_work_exp"

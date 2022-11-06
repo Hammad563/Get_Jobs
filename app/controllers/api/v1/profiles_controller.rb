@@ -1,39 +1,19 @@
 class Api::V1::ProfilesController < Api::BaseController
+    before_action :doorkeeper_authorize!
+
     def index
-       profile = Profile.find(params[:id])
+       profile = current_user.profile
        render json: profile, status: 200
     end
 
     def update_profile
-        user_profile = Profile.find_by(user_id: params[:user_id])
-        user_profile.update(profile_params)
-        render json: user_profile, status: 201
-    end
-
-
-    def create_role
-        role = Role.new({
-            profile_id: roles_params[:profile_id],
-            name: roles_params[:name],
-            category: roles_params[:category]
-        })
-        if role.save!
-            render json: role, status: 201
-        else
-            render json: {"error": "Could not create a role"}, status: 400
-        end
-    end
-    
-    def update_role
-        profile_role = Role.find(update_role_params[:id])
-        profile_role.update(update_role_params)
-        render json: {"msg": "success"}, status: 201
-    end
-
-    def delete_role
-        profile_role = Role.find(params[:id])
-        profile_role.destroy!
-        render json: {"msg": "success"}, status: 201
+        current_user.profile.update!(profile_params)
+        current_user.profile.jobrole_list = params[:jobrole_list]
+        current_user.profile.save!
+        current_user.name = params[:name]
+        current_user.save!
+        profile = current_user.profile
+        render json: profile, status: 201
     end
 
     def create_work_exp
@@ -60,7 +40,7 @@ class Api::V1::ProfilesController < Api::BaseController
     end
 
     def delete_work_exp
-        work_experience = WorkExperience.find(params[:id])
+        work_experience = WorkExperience.find_by(params[:profile_id])
         work_experience.destroy!
         render json: {"msg": "deleted work experience"}, status: 201
 
@@ -98,11 +78,43 @@ class Api::V1::ProfilesController < Api::BaseController
 
 
 
-    private
 
+
+    #legacy
+    def create_role
+        role = Role.new({
+            profile_id: roles_params[:profile_id],
+            name: roles_params[:name],
+            category: roles_params[:category]
+        })
+        if role.save!
+            render json: role, status: 201
+        else
+            render json: {"error": "Could not create a role"}, status: 400
+        end
+    end
+    #legacy
+    def update_role
+        profile_role = Role.find(update_role_params[:id])
+        profile_role.update(update_role_params)
+        render json: {"msg": "success"}, status: 201
+    end
+    #legacy
+    def delete_role
+        profile_role = Role.find(params[:id])
+        profile_role.destroy!
+        render json: {"msg": "success"}, status: 201
+    end
+
+
+
+    private
+    def set_profile
+        @profile = Profile.find_by(user_id: current_user.id)
+    end
 
     def profile_params
-        params.permit(:user_id,:country, :state, :city, :experience, :bio, :url, :linked_in, :github, :achievements, skill_list: [])
+        params.permit(:country, :state, :city, :experience, :bio, :url, :linked_in, :github, :achievements, :location_query)
     end
     def roles_params
         params.permit(:profile_id, :name, :category)

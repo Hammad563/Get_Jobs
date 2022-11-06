@@ -1,6 +1,6 @@
 module Api
     class BaseController < ActionController::API
-     
+      before_action :doorkeeper_authorize!
 
 
         class_eval do

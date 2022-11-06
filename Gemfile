@@ -29,6 +29,7 @@ gem "devise"
 gem "doorkeeper"
 gem "doorkeeper-jwt"
 gem 'acts-as-taggable-on', '~> 9.0'
+gem "active_model_serializers"
 
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_06_193750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -20,6 +20,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
   create_enum "category_role", ["Engineer", "Design", "Operations", "Product", "Management"]
   create_enum "job_status", ["Active", "Stale", "Hidden"]
   create_enum "job_type", ["Full Time", "Part Time", "Co_op", "On_call"]
+
+  create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.boolean "approved", default: false
+    t.float "rating"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "companies_users", id: false, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "company_id", null: false
+    t.index ["company_id"], name: "index_companies_users_on_company_id"
+    t.index ["user_id"], name: "index_companies_users_on_user_id"
+  end
 
   create_table "educations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
@@ -48,6 +64,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
     t.enum "status", enum_type: "job_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "companies_id", null: false
+    t.index ["companies_id"], name: "index_jobs_publisheds_on_companies_id"
     t.index ["user_id"], name: "index_jobs_publisheds_on_user_id"
   end
 
@@ -88,6 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
     t.text "achievements"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "location_query"
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -103,9 +122,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
   create_table "taggings", force: :cascade do |t|
     t.bigint "tag_id"
     t.string "taggable_type"
-    t.bigint "taggable_id"
+    t.uuid "taggable_id"
     t.string "tagger_type"
-    t.bigint "tagger_id"
+    t.uuid "tagger_id"
     t.string "context", limit: 128
     t.datetime "created_at", precision: nil
     t.string "tenant", limit: 128
@@ -152,8 +171,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "profile_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["profile_id"], name: "index_users_on_profile_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
@@ -172,10 +193,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_002219) do
   end
 
   add_foreign_key "educations", "profiles"
+  add_foreign_key "jobs_publisheds", "companies", column: "companies_id"
   add_foreign_key "jobs_publisheds", "users"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "roles", "profiles"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "users", "profiles"
   add_foreign_key "work_experiences", "profiles"
 end

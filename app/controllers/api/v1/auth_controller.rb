@@ -1,5 +1,5 @@
 class Api::V1::AuthController < Doorkeeper::TokensController
-
+  before_action :doorkeeper_authorize!, only: [:logout]
 
     def login
         user = User.find_for_database_authentication(email: params[:email])

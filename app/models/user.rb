@@ -6,8 +6,9 @@ class User < ApplicationRecord
           :confirmable, :lockable, :trackable
 
           #:database_authenticatable
-  has_one :profile
+  has_one :profile, dependent: :destroy
   has_many :jobs_published
+  has_and_belongs_to_many :companies
   after_create :after_create_user
 
   def after_create_user
@@ -15,6 +16,7 @@ class User < ApplicationRecord
       user_id: self.id
     })
     profile.save!
+    self.profile_id = profile.id
   end
 
 end
