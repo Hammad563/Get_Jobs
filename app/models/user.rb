@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_and_belongs_to_many :companies
   after_create :after_create_user
 
+  validates :password, presence: true, length: { minimum: 6 }
+
   def after_create_user
     profile = Profile.new({
       user_id: self.id

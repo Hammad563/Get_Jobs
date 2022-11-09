@@ -1,8 +1,9 @@
 module Api
     class BaseController < ActionController::API
+      include ApiRescues
       before_action :doorkeeper_authorize!
 
-
+      private
         class_eval do
             Devise.mappings.keys.each do |resource|
               define_method :"current_#{resource.to_s}" do

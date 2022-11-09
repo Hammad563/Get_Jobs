@@ -8,7 +8,6 @@ class Api::V1::CompaniesController < Api::BaseController
     def create_company
         company = Company.new({
             name: company_params[:name],
-            approved: company_params[:approved],
             description: company_params[:description]
         })
         company.users << current_user

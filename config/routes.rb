@@ -28,6 +28,11 @@ Rails.application.routes.draw do
       post "user/profile/delete_education", to: "profiles#delete_education"
       post "user/profile/delete_exp", to: "profiles#delete_work_exp"
 
+      # companies
+      get "user/companies", to: "companies#index"
+      post "user/companies", to: "companies#create_company"
+      
+
 
     end
   end
