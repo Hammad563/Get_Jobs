@@ -1,8 +1,4 @@
 class Api::V1::UsersController < Api::BaseController
-    def index
-        render json: { message: "Welcome to Get Job API" }, status: 200
-    end
-
     def register
         user = User.new(register_params)
         user.save

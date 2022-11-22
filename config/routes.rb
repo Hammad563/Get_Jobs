@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  root "api/v1/users#index"
+  require "sidekiq/web"
+  mount Sidekiq::Web, at: "/sidekiq"
+
+
+  root "landing#index"
   devise_for :users, only: [:confirmations, :passwords, :users], controllers: { confirmations: "confirmations", passwords: "passwords" }
   
   namespace "api" do
@@ -32,7 +36,11 @@ Rails.application.routes.draw do
       get "user/companies", to: "companies#index"
       post "user/companies", to: "companies#create_company"
       
-
+      # company jobs 
+      get "user/companies/jobs", to: "jobs_publisheds#index"
+      get "user/companies/job_specific", to: "jobs_publisheds#company_specific_job"
+      post "user/companies/jobs", to: "jobs_publisheds#create"
+      post "user/companies/jobs/set_status", to: "jobs_publisheds#update_job_status"
 
     end
   end

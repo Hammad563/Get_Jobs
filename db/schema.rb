@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_06_193750) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_22_043410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -51,21 +51,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_06_193750) do
 
   create_table "jobs_publisheds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
-    t.string "company"
     t.string "title"
     t.string "city"
     t.string "state"
     t.string "country"
-    t.enum "type", enum_type: "job_type"
+    t.enum "current_job_type", enum_type: "job_type"
     t.boolean "remote"
     t.string "hire_in_country"
     t.integer "experience"
     t.text "description"
-    t.enum "status", enum_type: "job_status"
+    t.enum "status", default: "Hidden", enum_type: "job_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "companies_id", null: false
-    t.index ["companies_id"], name: "index_jobs_publisheds_on_companies_id"
+    t.uuid "company_id", null: false
+    t.string "location_query"
+    t.integer "salary_range", default: [], array: true
+    t.string "job_q", default: [], array: true
+    t.string "benefits", default: [], array: true
+    t.index ["company_id"], name: "index_jobs_publisheds_on_company_id"
     t.index ["user_id"], name: "index_jobs_publisheds_on_user_id"
   end
 
@@ -193,7 +196,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_06_193750) do
   end
 
   add_foreign_key "educations", "profiles"
-  add_foreign_key "jobs_publisheds", "companies", column: "companies_id"
+  add_foreign_key "jobs_publisheds", "companies"
   add_foreign_key "jobs_publisheds", "users"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "profiles", "users"

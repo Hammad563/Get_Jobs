@@ -13,6 +13,12 @@ module GetJobs
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    config.session_store :cookie_store, key: '_interslice_session'
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store, config.session_options
+
+    
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins "*"
@@ -27,6 +33,8 @@ module GetJobs
       'X-Content-Type-Options' => 'nosniff'
     }
 
+    #queues
+    config.active_job.queue_adapter = :sidekiq
 
 
     # Configuration for the application, engines, and railties goes here.

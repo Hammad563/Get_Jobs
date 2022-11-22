@@ -74,6 +74,5 @@ module ApiRescues
                  response_code: @response_code,
                  response_message: @response_message,
                }, status: 401
-      end
-    end
+     end
 end
