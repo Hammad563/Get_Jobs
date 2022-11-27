@@ -42,6 +42,10 @@ Rails.application.routes.draw do
       post "user/companies/jobs", to: "jobs_publisheds#create"
       post "user/companies/jobs/set_status", to: "jobs_publisheds#update_job_status"
 
+      #search jobs
+      get "user/search", to: "jobs_publisheds#search_job"
+      get "user/jobfeed", to: "jobs_publisheds#job_feed"
+
     end
   end
 
