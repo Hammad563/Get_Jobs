@@ -10,8 +10,7 @@ class Api::V1::ProfilesController < Api::BaseController
         current_user.profile.update!(profile_params)
         current_user.profile.jobrole_list = params[:jobrole_list]
         current_user.profile.save!
-        current_user.name = params[:name]
-        current_user.save!
+        current_user.update!(name: params[:name])
         profile = current_user.profile
         render json: profile, status: 201
     end

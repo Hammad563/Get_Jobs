@@ -10,10 +10,10 @@ default: &default
 development:
   <<: *default
   database: get_jobs_development
-  #username: get_jobs
+  username: postgres
 
   # The password associated with the postgres role (username).
-  #password:
+  password: postgres
 
   #host: localhost
 

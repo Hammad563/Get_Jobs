@@ -52,16 +52,13 @@ class Api::V1::JobsPublishedsController < Api::BaseController
 
 
     def search_job
-        @totalJobs = JobsPublished.search(params[:query]).count
-        @jobs = JobsPublished.search(params[:query]).page(params[:page]).per(2).records
-        render json: {jobs: ActiveModelSerializers::SerializableResource.new(@jobs), count: @totalJobs}, status: 200
+        @jobs = JobsPublished.search(params[:query]).page(params[:page]).per(10).records
+        render json: {jobs: ActiveModelSerializers::SerializableResource.new(@jobs), count: @jobs.total_count}, status: 200
     end
 
     def job_feed
-        @totalJobs = JobsPublished.search(params[:query]).count
-        puts @totalJobs
-        @jobs = JobsPublished.search(params[:query]).page(params[:page]).per(2).records
-        render json: {jobs: ActiveModelSerializers::SerializableResource.new(@jobs), count: @totalJobs}, status: 200
+        @jobs = JobsPublished.search(params[:query]).page(params[:page]).per(10).records
+        render json: {jobs: ActiveModelSerializers::SerializableResource.new(@jobs), count: @jobs.total_count}, status: 200
     end
 
 
